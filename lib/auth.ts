@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto'
 import { cookies } from 'next/headers'
 import { isPasswordHash, isSessionSecret, SESSION_LIFETIME, signSession, verifyPassword, verifySession } from './credentials'
 import { clearLoginAttempts, consumeLoginAttempt } from './login-throttle'
+import { reportDatabaseError } from './db'
 
 export const SESSION_COOKIE = 'kill-switch-admin'
 
@@ -28,7 +29,8 @@ export async function authenticate(username: unknown, password: unknown): Promis
       httpOnly: true, sameSite: 'strict', path: '/', maxAge: SESSION_LIFETIME / 1000, secure: process.env.NODE_ENV === 'production',
     })
     return true
-  } catch {
+  } catch (error) {
+    reportDatabaseError('admin-login', error)
     return false
   }
 }

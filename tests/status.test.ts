@@ -1,15 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const { query } = vi.hoisted(() => ({ query: vi.fn() }))
+const { query, reportDatabaseError } = vi.hoisted(() => ({ query: vi.fn(), reportDatabaseError: vi.fn() }))
 vi.mock('server-only', () => ({}))
-vi.mock('../lib/db', () => ({ getPool: () => ({ query }) }))
+vi.mock('../lib/db', () => ({ getPool: () => ({ query }), reportDatabaseError }))
 import { GET } from '../app/api/status/[id]/route'
 import { createSwitch, validateName, setSwitchDisabled } from '../lib/switches'
 
 const id = 'f1a7c5d2-7400-4b9a-8e23-04b4fa901875'
 const request = (value = id) => GET(new Request('https://control.example/api/status/' + value), { params: Promise.resolve({ id: value }) })
 
-beforeEach(() => { query.mockReset() })
+beforeEach(() => { query.mockReset(); reportDatabaseError.mockReset() })
 
 describe('public status', () => {
   it.each([true, false])('returns only disabled=%s', async (disabled) => {
@@ -28,10 +28,12 @@ describe('public status', () => {
     expect((await request()).status).toBe(404)
   })
   it('returns a safe 503 on database failure', async () => {
-    query.mockRejectedValue(new Error('secret database password'))
+    const error = new Error('secret database password')
+    query.mockRejectedValue(error)
     const response = await request()
     expect(response.status).toBe(503)
     expect(await response.text()).not.toContain('secret')
+    expect(reportDatabaseError).toHaveBeenCalledWith('switch-status', error)
   })
   it.each(['true', 'false', 'missing', 'invalid', 'failure'])('keeps CORS and no-store for %s', async (mode) => {
     if (mode === 'failure') query.mockRejectedValue(new Error('offline'))

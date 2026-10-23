@@ -1,4 +1,5 @@
 import { getSwitchStatus, isSwitchId } from '../../../../lib/switches'
+import { reportDatabaseError } from '../../../../lib/db'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -11,7 +12,8 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
     const disabled = await getSwitchStatus(id)
     if (disabled === null) return Response.json({ error: 'Switch not found' }, { status: 404, headers })
     return Response.json({ disabled }, { headers })
-  } catch {
+  } catch (error) {
+    reportDatabaseError('switch-status', error)
     return Response.json({ error: 'Status temporarily unavailable' }, { status: 503, headers })
   }
 }

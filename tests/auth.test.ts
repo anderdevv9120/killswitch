@@ -1,12 +1,12 @@
 import { scryptSync } from 'node:crypto'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-const { cookieJar, query } = vi.hoisted(() => ({
-  cookieJar: { get: vi.fn(), set: vi.fn(), delete: vi.fn() }, query: vi.fn(),
+const { cookieJar, query, reportDatabaseError } = vi.hoisted(() => ({
+  cookieJar: { get: vi.fn(), set: vi.fn(), delete: vi.fn() }, query: vi.fn(), reportDatabaseError: vi.fn(),
 }))
 vi.mock('server-only', () => ({}))
 vi.mock('next/headers', () => ({ cookies: async () => cookieJar }))
-vi.mock('../lib/db', () => ({ getPool: () => ({ query }) }))
+vi.mock('../lib/db', () => ({ getPool: () => ({ query }), reportDatabaseError }))
 import { authenticate, isAdmin, requireAdmin } from '../lib/auth'
 import { consumeLoginAttempt } from '../lib/login-throttle'
 
@@ -15,6 +15,7 @@ const storedHash = 'scrypt$' + salt.toString('hex') + '$' + scryptSync('a-test-p
 
 beforeEach(() => {
   query.mockReset()
+  reportDatabaseError.mockReset()
   cookieJar.get.mockReset()
   cookieJar.set.mockReset()
   cookieJar.delete.mockReset()
@@ -65,9 +66,11 @@ describe('admin boundary', () => {
     expect(cookieJar.set).not.toHaveBeenCalled()
   })
   it('fails closed on a database outage', async () => {
-    query.mockRejectedValue(new Error('private connection details'))
+    const error = new Error('private connection details')
+    query.mockRejectedValue(error)
     expect(await authenticate('admin', 'a-test-password')).toBe(false)
     expect(cookieJar.set).not.toHaveBeenCalled()
+    expect(reportDatabaseError).toHaveBeenCalledWith('admin-login', error)
   })
 })
 

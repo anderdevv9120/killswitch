@@ -4,7 +4,7 @@ const { query, cookieJar, revalidatePath, redirect } = vi.hoisted(() => ({
   query: vi.fn(), cookieJar: { get: vi.fn(), set: vi.fn(), delete: vi.fn() }, revalidatePath: vi.fn(), redirect: vi.fn(),
 }))
 vi.mock('server-only', () => ({}))
-vi.mock('../lib/db', () => ({ getPool: () => ({ query }) }))
+vi.mock('../lib/db', () => ({ getPool: () => ({ query }), reportDatabaseError: vi.fn() }))
 vi.mock('next/headers', () => ({ cookies: async () => cookieJar }))
 vi.mock('next/cache', () => ({ revalidatePath }))
 vi.mock('next/navigation', () => ({ redirect }))
