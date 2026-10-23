@@ -1,2 +1,89 @@
+:root { color-scheme: light; --ink: #152c29; --muted: #536963; --green: #14614e; --line: #dce5df; }
 * { box-sizing: border-box; }
-body { margin: 0; font-family: Arial, sans-serif; background: #f4f6fa; color: #192336; }
+body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #f6f8f5; color: var(--ink); font-size: 15px; line-height: 1.5; }
+button, input { font: inherit; }
+button, .brand { -webkit-tap-highlight-color: transparent; }
+button { min-height: 44px; padding: 11px 18px; border: 1px solid transparent; border-radius: 8px; background: var(--green); color: white; font-weight: 600; cursor: pointer; transition: background 150ms; white-space: nowrap; }
+button:hover { background: #0f4b3d; }
+button:disabled { opacity: .6; cursor: wait; }
+input { width: 100%; min-height: 46px; padding: 11px 14px; border: 1px solid #b9c9c0; border-radius: 8px; color: var(--ink); background: white; }
+input::placeholder { color: #667a73; }
+button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid #2d806d; outline-offset: 3px; }
+a { color: inherit; }
+h1, h2, h3, p { margin: 0; }
+h1 { font-size: clamp(28px, 4vw, 38px); letter-spacing: -1.5px; line-height: 1.2; margin: 10px 0 12px; }
+h2 { font-size: 18px; letter-spacing: -.4px; }
+h3 { font-size: 18px; line-height: 1.35; overflow-wrap: anywhere; }
+.muted { color: var(--muted); }
+.eyebrow { color: var(--green); font-size: 11px; font-weight: 700; letter-spacing: 1.7px; }
+.panel { background: white; border: 1px solid var(--line); border-radius: 12px; }
+.dashboard { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+.topbar { min-height: 96px; display: flex; justify-content: space-between; align-items: center; gap: 20px; border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 12px; font-size: 19px; font-weight: 700; text-decoration: none; letter-spacing: -.6px; }
+.brand-mark { display: inline-grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; background: var(--ink); color: #d5f2c6; font-size: 23px; font-weight: 700; }
+.topbar-actions { display: flex; gap: 24px; align-items: center; }
+.admin-label { color: var(--muted); font-size: 10px; letter-spacing: 1.4px; font-weight: 700; }
+.button-quiet { background: transparent; color: var(--muted); padding: 8px 0 8px 12px; }
+.button-quiet:hover { background: transparent; color: var(--ink); text-decoration: underline; }
+.page-heading { padding: 48px 0 32px; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; }
+.summary { font-size: 12px; color: var(--muted); white-space: nowrap; padding-bottom: 4px; }
+.summary strong { color: var(--ink); }
+.summary span { color: #a2b4a9; margin: 0 9px; }
+.create-panel { padding: 24px; }
+.create-panel .muted { font-size: 13px; margin-top: 4px; }
+.create-form { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+.create-input { flex: 1; min-width: 200px; }
+.form-message { flex-basis: 100%; }
+.deployment-section { margin-top: 38px; }
+.section-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.section-heading > .muted { font-size: 12px; }
+.count { display: inline-block; background: #e8ede7; color: var(--muted); padding: 1px 8px; border-radius: 6px; margin-left: 7px; font-size: 12px; vertical-align: middle; }
+.deployment-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.deployment { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 24px; }
+.deployment-info { min-width: 0; }
+.deployment-title { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 9px; }
+.deployment-id { font-size: 11px; color: var(--muted); overflow-wrap: anywhere; }
+.updated { margin-top: 7px; font-size: 11px; color: var(--muted); }
+.badge { font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: 600; white-space: nowrap; }
+.badge span { font-size: 8px; padding-right: 3px; }
+.badge-enabled { color: #1d6244; background: #e9f4e9; }
+.badge-disabled { color: #9b302b; background: #fcebe8; }
+.button-row { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+.button-row button { font-size: 12px; }
+.button-secondary { border-color: #c9d5ce; background: white; color: var(--ink); }
+.button-secondary:hover { background: #f1f5f0; }
+.button-danger { color: #a23b30; background: #fff3ef; border-color: #f0d4ca; }
+.button-danger:hover { background: #fbe5dc; }
+.deployment-controls { max-width: 50%; }
+.deployment-controls :is(p, output) { display: block; margin-top: 10px; font-size: 12px; }
+.copy-message { color: var(--muted); overflow-wrap: anywhere; }
+.error { color: #a12c27; font-size: 13px; }
+.success { color: #216342; font-size: 13px; }
+.empty-state { text-align: center; padding: 48px 24px; border-style: dashed; background: #fbfcfa; }
+.empty-icon { display: inline-grid; place-items: center; width: 44px; height: 44px; color: var(--green); background: #eaf0e7; border-radius: 12px; font-size: 25px; margin-bottom: 14px; }
+.empty-state p { margin-top: 8px; font-size: 13px; }
+footer { color: var(--muted); font-size: 11px; padding: 28px 0 48px; }
+.login-shell { min-height: 100dvh; display: grid; place-items: center; padding: 24px; }
+.login-panel { width: min(100%, 440px); padding: 36px; }
+.login-panel .brand-mark { margin-bottom: 28px; }
+.login-panel .muted { margin-bottom: 28px; }
+.stack { display: grid; gap: 10px; }
+.stack label { font-size: 13px; font-weight: 600; margin-top: 6px; }
+.stack button { margin-top: 10px; }
+.error-shell { max-width: 600px; margin: 64px auto; padding: 32px; }
+.error-shell button { margin-top: 24px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+@media (max-width: 760px) {
+  .dashboard { padding: 0 20px; }
+  .topbar { min-height: 78px; }
+  .admin-label { display: none; }
+  .page-heading { padding-top: 32px; flex-direction: column; align-items: flex-start; gap: 12px; }
+  .section-heading { align-items: flex-start; flex-direction: column; gap: 5px; }
+  .create-panel, .deployment { padding: 20px; }
+  .deployment { flex-direction: column; align-items: flex-start; gap: 20px; }
+  .deployment-controls { max-width: 100%; width: 100%; }
+  .button-row { justify-content: flex-start; }
+  .create-input { min-width: 0; flex-basis: 100%; }
+  .create-form > button { width: 100%; }
+  .login-panel { padding: 28px; }
+}
