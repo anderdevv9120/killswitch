@@ -18,11 +18,25 @@ function getConfig() {
 
 export async function authenticate(username: unknown, password: unknown): Promise<boolean> {
   const config = getConfig()
-  if (!config || typeof username !== 'string' || username.length > 120 || typeof password !== 'string' || password.length > 1024) return false
+  if (!config) {
+    console.error('[admin-login] Invalid administrator configuration ' + JSON.stringify({
+      usernameConfigured: Boolean(process.env.ADMIN_USERNAME?.trim()),
+      passwordHashValid: isPasswordHash(process.env.ADMIN_PASSWORD_HASH ?? ''),
+      sessionSecretValid: isSessionSecret(process.env.SESSION_SECRET ?? ''),
+    }))
+    return false
+  }
+  if (typeof username !== 'string' || username.length > 120 || typeof password !== 'string' || password.length > 1024) return false
   try {
-    if (!await consumeLoginAttempt()) return false
+    if (!await consumeLoginAttempt()) {
+      console.warn('[admin-login] Login rate limit reached')
+      return false
+    }
     const validPassword = await verifyPassword(password, config.passwordHash)
-    if (username !== config.username || !validPassword) return false
+    if (username !== config.username || !validPassword) {
+      console.warn('[admin-login] Credentials do not match')
+      return false
+    }
     await clearLoginAttempts()
     const cookieJar = await cookies()
     cookieJar.set(SESSION_COOKIE, signSession(Date.now(), config.secret, config.fingerprint), {
