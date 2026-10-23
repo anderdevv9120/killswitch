@@ -1,6 +1,6 @@
 # Kill Switch Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Deliver an independently hosted admin application that stores and serves a disabled flag for each customer deployment.
 
@@ -115,16 +115,16 @@
 
 **Interfaces:** Deliver the npm scripts from Task 1, authentication configuration from Task 2, public route contract, and the customer integration contract from the approved spec.
 
-- [ ] **Step 1: Write the local setup procedure.** Explain installing the recorded Node/npm dependencies, supplying a reachable PostgreSQL database, setting server-only environment variables, running the password-hash helper, generating the signing secret locally, running `npm run db:migrate`, and starting `npm run dev`. Include placeholders only. Explain that real `.env` files stay ignored and the admin service must use HTTPS in production. Add pool sizing/SSL configuration guidance for the selected database without disabling certificate verification.
-- [ ] **Step 2: Document public API usage and the Carebox integration example.** Use a placeholder service origin and deployment UUID. Show a two-second fetch abort, `cache: 'no-store'`, a check of `response.ok`, guarded JSON parsing, strict boolean `data?.disabled === true`, and a catch that returns false. The normal React tree mounts only after the result resolves; true renders exactly `Nhớ trả hết phí nhé`. Treat the example as documented integration, not an edit to Carebox. Explain failure/unknown-record behavior, next-reload activation, public UUIDs, source-removal/endpoint-blocking bypass, and shared login-throttle limits.
-- [ ] **Step 3: Check documented integration behavior.** Add a small self-check alongside the example or a focused test that exercises true, false, string `true`, null/malformed JSON, non-2xx, network failure and timeout. Keep it independent of the existing Carebox checkout and avoid creating a reusable SDK just for this example.
-- [ ] **Step 4: Run final lint and typecheck; if either fails, stop verification and report.** If both pass, run the focused tests once as `npm test`. Run optional dedicated database checks only when `TEST_DATABASE_URL` is supplied; do not discover or repurpose credentials from sibling projects. Do not repeat already-passing checks absent a code change or concrete concern. No production build.
-- [ ] **Step 5: Review the complete diff against the spec and this plan.** Confirm no Carebox edits, no generated or real environment secrets staged, lockfile present, standalone Git root correct, protected actions authorize independently of pages, all public error branches retain CORS/no-store, and setup docs match actual commands. Report browser/database/deployment gaps plainly.
-- [ ] **Step 6: Commit task-owned delivery files** with message `docs: document kill switch setup and client contract`. Do not push, publish, provision infrastructure, or claim a live deployment.
+- [x] **Step 1: Write the local setup procedure.** Explain installing the recorded Node/npm dependencies, supplying a reachable PostgreSQL database, setting server-only environment variables, running the password-hash helper, generating the signing secret locally, running `npm run db:migrate`, and starting `npm run dev`. Include placeholders only. Explain that real `.env` files stay ignored and the admin service must use HTTPS in production. Add pool sizing/SSL configuration guidance for the selected database without disabling certificate verification.
+- [x] **Step 2: Document public API usage and the Carebox integration example.** Use a placeholder service origin and deployment UUID. Show a two-second fetch abort, `cache: 'no-store'`, a check of `response.ok`, guarded JSON parsing, strict boolean `data?.disabled === true`, and a catch that returns false. The normal React tree mounts only after the result resolves; true renders exactly `Nhớ trả hết phí nhé`. Treat the example as documented integration, not an edit to Carebox. Explain failure/unknown-record behavior, next-reload activation, public UUIDs, source-removal/endpoint-blocking bypass, and shared login-throttle limits.
+- [x] **Step 3: Check documented integration behavior.** Add a small self-check alongside the example or a focused test that exercises true, false, string `true`, null/malformed JSON, non-2xx, network failure and timeout. Keep it independent of the existing Carebox checkout and avoid creating a reusable SDK just for this example.
+- [x] **Step 4: Run final lint and typecheck; if either fails, stop verification and report.** If both pass, run the focused tests once as `npm test`. Run optional dedicated database checks only when `TEST_DATABASE_URL` is supplied; do not discover or repurpose credentials from sibling projects. Do not repeat already-passing checks absent a code change or concrete concern. No production build.
+- [x] **Step 5: Review the complete diff against the spec and this plan.** Confirm no Carebox edits, no generated or real environment secrets staged, lockfile present, standalone Git root correct, protected actions authorize independently of pages, all public error branches retain CORS/no-store, and setup docs match actual commands. Report browser/database/deployment gaps plainly.
+- [x] **Step 6: Commit task-owned delivery files** with message `docs: document kill switch setup and client contract`. Do not push, publish, provision infrastructure, or claim a live deployment.
 
 ## Execution and Handoff
 
-Plan status: Approved for Native execution; implementation underway.
+Plan status: Completed using Native execution. Final lint/typecheck pass; 74/74 tests pass. See docs/verification.md for acceptance evidence and limits.
 
 Recommended execution: **Native**. These four tasks share a small set of database/auth interfaces; implementing them in this session keeps that context together. Use an independent final reviewer if agent tools are available, and report their absence otherwise.
 
