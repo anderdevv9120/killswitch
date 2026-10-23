@@ -33,7 +33,7 @@ npm run db:migrate
 npm run dev
 ```
 
-Open `http://localhost:3000`, then sign in with your configured username and the password you entered in the helper. Missing or malformed administrator configuration denies login. Restart the server after changing environment settings.
+Open `http://localhost:3456`, then sign in with your configured username and the password you entered in the helper. Missing or malformed administrator configuration denies login. Restart the server after changing environment settings.
 
 `db:migrate` applies `migrations/001_initial.sql` transactionally and can be repeated. It creates the `switches` and `admin_login_throttle` tables without resetting their data. Later schema changes need a new migration; editing this initial file will not alter existing tables automatically.
 
@@ -62,7 +62,7 @@ Invalid UUID: 400. Unknown record: 404. Database failure: 503. Every handler res
 For a manual check:
 
 ```powershell
-Invoke-RestMethod 'http://localhost:3000/api/status/REPLACE-WITH-YOUR-UUID'
+Invoke-RestMethod 'http://localhost:3456/api/status/REPLACE-WITH-YOUR-UUID'
 ```
 
 ## Customer application integration
