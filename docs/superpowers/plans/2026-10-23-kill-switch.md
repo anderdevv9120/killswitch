@@ -6,7 +6,7 @@
 
 **Architecture:** One Next.js App Router application serves a protected admin dashboard and public status route. PostgreSQL stores switch records and shared login throttling state. Server-side code uses parameterized `pg` queries; customer applications only consume the public status URL.
 
-**Tech Stack:** Next.js, React, TypeScript, PostgreSQL, `pg`, Node.js crypto, ESLint, Vitest for focused server checks; plain CSS, no ORM or UI framework.
+**Tech Stack:** Next.js, React, TypeScript, PostgreSQL, `pg`, Node.js crypto, Oxlint, Vitest for focused server checks; plain CSS, no ORM or UI framework.
 
 **Spec:** `docs/superpowers/specs/2026-10-23-kill-switch-design.md` (approved).
 
@@ -36,7 +36,7 @@
 
 ## File Map
 
-- Root configuration: `package.json`, `package-lock.json`, `tsconfig.json`, `next-env.d.ts`, `eslint.config.mjs`, `.gitignore`, `.env.example`, `vitest.config.ts`.
+- Root configuration: `package.json`, `package-lock.json`, `tsconfig.json`, `next-env.d.ts`, `.oxlintrc.json`, `.gitignore`, `.env.example`, `vitest.config.ts`.
 - `app/layout.tsx`, `app/globals.css`, `app/error.tsx`: application shell, accessible styling, and safe fallback UI.
 - `lib/db.ts`: lazy shared PostgreSQL pool with bounded connection/query timeouts and a safe pool error handler.
 - `lib/switches.ts`: record type, validation, parameterized queries.
@@ -63,13 +63,13 @@
 - `getPool(): Pool` in `lib/db.ts`, initialized only when needed so a missing database does not fail module import.
 - Public `GET(request: Request, context: { params: Promise<{ id: string }> }): Promise<Response>`.
 
-- [ ] **Step 1: Create the minimum project configuration.** Verify currently supported stable package versions and Node engine requirements against the registry/documentation at execution time; record exact installed versions in the lockfile. Add scripts `dev`, `start`, `lint`, `typecheck`, `test`, `db:migrate`, and `hash-password`. Use `eslint .`, `next typegen && tsc --noEmit`, and `vitest run`; type generation is not a production build. Initialize this directory as its own Git repository. Ignore environment files except `.env.example`, dependency/generated output, and local search indexes.
-- [ ] **Step 2: Write `tests/status.test.ts` against the interfaces above.** Mock database queries. Assert known true/false responses have only the `disabled` field; invalid UUID returns 400 without querying; missing record returns 404; rejected database query returns 503 without exposing the error. Assert every case has `Cache-Control: no-store`, `Access-Control-Allow-Origin: *`, and no credentials header. Assert parameter arrays carry user input instead of interpolating SQL.
-- [ ] **Step 3: Run `npm run lint`, then `npm run typecheck`.** Stop on failure under Anderson's verification rule. Once both pass, run `npm test -- tests/status.test.ts`; confirm behavior failures precede the implementation. Keep imports/type declarations available so the intended red test is behavioral rather than a typecheck failure.
-- [ ] **Step 4: Implement the schema, queries and route.** `switches` has the exact columns from the spec, UUID primary key, false default, nonempty/length-constrained name, and timestamptz update field. Configure a small reusable pool with 1000 ms connection and query timeouts and sanitized error reporting. Use Node runtime for database routes and request-time reads. Apply the same response headers to all success/error branches; never fall back to an earlier status. Validate UUIDs before passing them to PostgreSQL.
-- [ ] **Step 5: Implement schema setup.** The first migration also creates the singleton login-throttle table specified in Task 2. The migration script loads local environment configuration using Next's environment loader, executes the checked-in migration transactionally, closes its pool, and exits nonzero on failure without printing credentials. Use idempotent initial table creation so running the initial setup twice is safe; do not build a migration framework.
-- [ ] **Step 6: Run lint, typecheck, then the focused status checks.** Expected: both static checks succeed and all status assertions pass. If `TEST_DATABASE_URL` is explicitly available, exercise initial migration twice, false default, parameterized insert/read/update, and missing row using a dedicated temporary schema; never run test cleanup against the normal `DATABASE_URL`. Otherwise record the database acceptance gap.
-- [ ] **Step 7: Review the task diff and commit only its files** with message `feat: add database-backed switch status API`. Exclude unrelated files and secrets.
+- [x] **Step 1: Create the minimum project configuration.** Verify currently supported stable package versions and Node engine requirements against the registry/documentation at execution time; record exact installed versions in the lockfile. Add scripts `dev`, `start`, `lint`, `typecheck`, `test`, `db:migrate`, and `hash-password`. Use `oxlint --deny-warnings`, `next typegen && tsc --noEmit`, and `vitest run`; type generation is not a production build. Initialize this directory as its own Git repository. Ignore environment files except `.env.example`, dependency/generated output, and local search indexes.
+- [x] **Step 2: Write `tests/status.test.ts` against the interfaces above.** Mock database queries. Assert known true/false responses have only the `disabled` field; invalid UUID returns 400 without querying; missing record returns 404; rejected database query returns 503 without exposing the error. Assert every case has `Cache-Control: no-store`, `Access-Control-Allow-Origin: *`, and no credentials header. Assert parameter arrays carry user input instead of interpolating SQL.
+- [x] **Step 3: Run `npm run lint`, then `npm run typecheck`.** Stop on failure under Anderson's verification rule. Once both pass, run `npm test -- tests/status.test.ts`; confirm behavior failures precede the implementation. Keep imports/type declarations available so the intended red test is behavioral rather than a typecheck failure.
+- [x] **Step 4: Implement the schema, queries and route.** `switches` has the exact columns from the spec, UUID primary key, false default, nonempty/length-constrained name, and timestamptz update field. Configure a small reusable pool with 1000 ms connection and query timeouts and sanitized error reporting. Use Node runtime for database routes and request-time reads. Apply the same response headers to all success/error branches; never fall back to an earlier status. Validate UUIDs before passing them to PostgreSQL.
+- [x] **Step 5: Implement schema setup.** The first migration also creates the singleton login-throttle table specified in Task 2. The migration script loads local environment configuration using Next's environment loader, executes the checked-in migration transactionally, closes its pool, and exits nonzero on failure without printing credentials. Use idempotent initial table creation so running the initial setup twice is safe; do not build a migration framework.
+- [x] **Step 6: Run lint, typecheck, then the focused status checks.** Expected: both static checks succeed and all status assertions pass. If `TEST_DATABASE_URL` is explicitly available, exercise initial migration twice, false default, parameterized insert/read/update, and missing row using a dedicated temporary schema; never run test cleanup against the normal `DATABASE_URL`. Otherwise record the database acceptance gap.
+- [x] **Step 7: Review the task diff and commit only its files** with message `feat: add database-backed switch status API`. Exclude unrelated files and secrets.
 
 ## Task 2: Administrator authentication and shared throttling
 
