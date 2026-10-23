@@ -8,6 +8,7 @@ export function getPool(): Pool {
   if (!shared.killSwitchPool) {
     shared.killSwitchPool = new Pool({
       connectionString: process.env.DATABASE_URL,
+      enableChannelBinding: true,
       max: 5,
       connectionTimeoutMillis: 1000,
       query_timeout: 1000,

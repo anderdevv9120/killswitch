@@ -6,7 +6,7 @@ nextEnv.loadEnvConfig(process.cwd())
 
 async function migrate() {
   if (!process.env.DATABASE_URL) throw new Error('Database is not configured')
-  const client = new pg.Client({ connectionString: process.env.DATABASE_URL, connectionTimeoutMillis: 5000, statement_timeout: 10000 })
+  const client = new pg.Client({ connectionString: process.env.DATABASE_URL, enableChannelBinding: true, connectionTimeoutMillis: 5000, statement_timeout: 10000 })
   try {
     await client.connect()
     await client.query('BEGIN')
